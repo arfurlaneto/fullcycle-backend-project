@@ -3,6 +3,7 @@ import { Category } from './category.entity';
 import { ClassValidatorFields } from '../../shared/domain/validators/class-validator-fields';
 import { Notification } from '../../shared/domain/validators/notification';
 
+//criar um testes que verifique os decorators
 export class CategoryRules {
   @MaxLength(255, { groups: ['name'] })
   name: string;
