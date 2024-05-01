@@ -1,6 +1,7 @@
 import { Entity } from '../../shared/domain/entity';
 import { ValueObject } from '../../shared/domain/value-object';
 import { Uuid } from '../../shared/domain/value-objects/uuid.vo';
+import { CategoryFakeBuilder } from './category-fake.builder';
 import { CategoryValidatorFactory } from './category.validator';
 
 export type CategoryConstructorProps = {
@@ -65,6 +66,10 @@ export class Category extends Entity {
   validate(fields?: string[]) {
     const validator = CategoryValidatorFactory.create();
     return validator.validate(this.notification, this, fields);
+  }
+
+  static fake() {
+    return CategoryFakeBuilder;
   }
 
   toJSON() {
