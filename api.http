@@ -1,0 +1,53 @@
+### Create Category
+POST http://localhost:3000/categories
+Content-Type: application/json
+
+{
+    "name": "Category 1",
+    "description": "Description 1"
+}
+
+### List Categories
+GET http://localhost:3000/categories
+
+### Get Category
+GET http://localhost:3000/categories/18c58d18-2da3-483b-a446-ce7fa8189347
+
+### Update Category
+PATCH http://localhost:3000/categories/18c58d18-2da3-483b-a446-ce7fa8189347
+Content-Type: application/json
+
+{
+    "name": "Category 1 (Changed)",
+    "description": "Description 1"
+}
+
+### Delete Category
+DELETE http://localhost:3000/categories/18c58d18-2da3-483b-a446-ce7fa8189347
+
+### Create Cast Member
+POST http://localhost:3000/cast-members
+Content-Type: application/json
+
+{
+	"name": "Star Name",
+	"type": 2
+}
+
+### List Cast Members
+GET http://localhost:3000/cast-members
+
+### Get Cast Member
+GET http://localhost:3000/cast-members/5e4fb489-9799-4086-ba10-7e4fdd4f485d
+
+### Update Cast Member
+PATCH http://localhost:3000/cast-members/5e4fb489-9799-4086-ba10-7e4fdd4f485d
+Content-Type: application/json
+
+{
+	"name": "Star Name (Changed)",
+	"type": 2
+}
+
+### Delete Cast Member
+DELETE http://localhost:3000/cast-members/5e4fb489-9799-4086-ba10-7e4fdd4f485d

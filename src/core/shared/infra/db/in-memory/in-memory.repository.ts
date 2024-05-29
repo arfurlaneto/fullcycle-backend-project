@@ -1,5 +1,4 @@
 import { Entity } from '../../../domain/entity';
-import { InvalidArgumentError } from '../../../domain/errors/invalid-argument.error';
 import { NotFoundError } from '../../../domain/errors/not-found.error';
 import {
   IRepository,
@@ -11,7 +10,7 @@ import {
 } from '../../../domain/repository/search-params';
 import { SearchResult } from '../../../domain/repository/search-result';
 import { ValueObject } from '../../../domain/value-object';
- 
+
 export abstract class InMemoryRepository<
   E extends Entity,
   EntityId extends ValueObject,
@@ -54,42 +53,6 @@ export abstract class InMemoryRepository<
   async findAll(): Promise<any[]> {
     return this.items;
   }
-
-  async findByIds(ids: EntityId[]): Promise<E[]> {
-    //avoid to return repeated items
-    return this.items.filter((entity) => {
-      return ids.some((id) => entity.entity_id.equals(id));
-    });
-  }
-
-  async existsById(
-    ids: EntityId[],
-  ): Promise<{ exists: EntityId[]; not_exists: EntityId[] }> {
-    if (!ids.length) {
-      throw new InvalidArgumentError(
-        'ids must be an array with at least one element',
-      );
-    }
-
-    if (this.items.length === 0) {
-      return {
-        exists: [],
-        not_exists: ids,
-      };
-    }
-
-    const existsId = new Set<EntityId>();
-    const notExistsId = new Set<EntityId>();
-    ids.forEach((id) => {
-      const item = this.items.find((entity) => entity.entity_id.equals(id));
-      item ? existsId.add(id) : notExistsId.add(id);
-    });
-    return {
-      exists: Array.from(existsId.values()),
-      not_exists: Array.from(notExistsId.values()),
-    };
-  }
-
   abstract getEntity(): new (...args: any[]) => E;
 }
 
@@ -147,7 +110,7 @@ export abstract class InMemorySearchableRepository<
       return items;
     }
 
-    return [...items].sort((a : any, b : any) => {
+    return [...items].sort((a, b) => {
       const aValue = custom_getter ? custom_getter(sort, a) : a[sort];
       const bValue = custom_getter ? custom_getter(sort, b) : b[sort];
       if (aValue < bValue) {
