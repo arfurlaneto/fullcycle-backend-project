@@ -34,19 +34,16 @@ export class CategorySequelizeRepository implements ICategoryRepository {
   }
 
   async update(entity: Category): Promise<void> {
-    const id = entity.category_id.id;
+    const model = await this.categoryModel.findByPk(entity.category_id.id);
+
+    if (!model) {
+      throw new NotFoundError(entity.category_id.id, this.getEntity());
+    }
 
     const modelProps = CategoryModelMapper.toModel(entity);
-    const [affectedRows] = await this.categoryModel.update(
-      modelProps.toJSON(),
-      {
-        where: { category_id: entity.category_id.id },
-      },
-    );
-
-    if (affectedRows !== 1) {
-      throw new NotFoundError(id, this.getEntity());
-    }
+    await this.categoryModel.update(modelProps.toJSON(), {
+      where: { category_id: entity.category_id.id },
+    });
   }
 
   async delete(category_id: CategoryId): Promise<void> {
