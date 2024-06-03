@@ -24,6 +24,7 @@ import { ProcessAudioVideoMediasUseCase } from '../../core/video/application/use
 import { PublishVideoMediaReplacedInQueueHandler } from '../../core/video/application/handlers/publish-video-media-replaced-in-queue.handler';
 import { IMessageBroker } from '../../core/shared/application/message-broker.interface';
 import { DeleteVideoUseCase } from '@core/video/application/use-cases/delete-video/delete-video.use-case';
+import { ListVideosUseCase } from '@core/video/application/use-cases/list-videos/list-videos.use-case';
 
 export const REPOSITORIES = {
   VIDEO_REPOSITORY: {
@@ -124,6 +125,28 @@ export const USE_CASES = {
       ApplicationService,
       REPOSITORIES.VIDEO_REPOSITORY.provide,
       'IStorage',
+    ],
+  },
+  LIST_VIDEOS_USE_CASE: {
+    provide: ListVideosUseCase,
+    useFactory: (
+      videoRepo: IVideoRepository,
+      categoryRepo: ICategoryRepository,
+      genreRepo: IGenreRepository,
+      castMemberRepo: ICastMemberRepository,
+    ) => {
+      return new ListVideosUseCase(
+        videoRepo,
+        categoryRepo,
+        genreRepo,
+        castMemberRepo,
+      );
+    },
+    inject: [
+      REPOSITORIES.VIDEO_REPOSITORY.provide,
+      CATEGORY_PROVIDERS.REPOSITORIES.CATEGORY_REPOSITORY.provide,
+      GENRES_PROVIDERS.REPOSITORIES.GENRE_REPOSITORY.provide,
+      CAST_MEMBERS_PROVIDERS.REPOSITORIES.CAST_MEMBER_REPOSITORY.provide,
     ],
   },
   GET_VIDEO_USE_CASE: {

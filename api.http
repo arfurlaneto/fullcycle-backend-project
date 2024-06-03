@@ -3,9 +3,6 @@
 @castMemberId = {{createCastMember.response.body.$.data.id}}
 @genreId = {{createGenre.response.body.$.data.id}}
 @videoId = {{createVideo.response.body.$.data.id}}
-@fixedCategoryId = a8f1bf12-22bf-4add-b3f7-700d084aec0f
-@fixedGenreId = 2c05cfa1-78f8-470c-95da-3f77f61dd363
-@fixedCastMemberId = 727b3c56-a5f5-4633-a783-fc00fe174eb1
 
 ###
 
@@ -103,7 +100,7 @@ Authorization: Bearer {{jwtToken}}
 
 {
     "name": "Genre {{$timestamp}}",
-    "categories_id": ["{{fixedCategoryId}}"]
+    "categories_id": ["{{categoryId}}"]
 }
 
 ###
@@ -128,7 +125,7 @@ Authorization: Bearer {{jwtToken}}
 
 {
     "name": "Genre {{$timestamp}} (Updated)",
-    "categories_id": ["{{fixedCategoryId}}"]
+    "categories_id": ["{{categoryId}}"]
 }
 
 ###
@@ -153,20 +150,37 @@ Content-Type: application/json
     "rating": "L",
     "duration": 90,
     "categories_id": [
-        "{{fixedCategoryId}}"
+        "{{categoryId}}"
     ],
     "genres_id": [
-        "{{fixedGenreId}}"
+        "{{genreId}}"
     ],
     "cast_members_id": [
-        "{{fixedCastMemberId}}"
+        "{{castMemberId}}"
     ]
 }
+
 
 ###
 
 # List Videos
 GET http://localhost:3000/videos
+
+
+###
+
+# List Videos (Filter by Category)
+GET http://localhost:3000/videos?filter%5Bcategories_id%5D={{categoryId}}
+
+###
+
+# List Videos (Filter by Genre)
+GET http://localhost:3000/videos?filter%5Bgenres_id%5D={{genreId}}
+
+###
+
+# List Videos (Filter by Cast Member)
+GET http://localhost:3000/videos?filter%5Bcast_members_id%5D={{castMemberId}}
 
 ###
 
@@ -187,13 +201,13 @@ Content-Type: application/json
     "rating": "L",
     "duration": 90,
     "categories_id": [
-        "{{fixedCategoryId}}"
+        "{{categoryId}}"
     ],
     "genres_id": [
-        "{{fixedGenreId}}"
+        "{{genreId}}"
     ],
     "cast_members_id": [
-        "{{fixedCastMemberId}}"
+        "{{castMemberId}}"
     ]
 }
 

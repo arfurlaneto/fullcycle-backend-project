@@ -13,6 +13,8 @@ import {
   BadRequestException,
   HttpCode,
   Delete,
+  Query,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateVideoUseCase } from '../../core/video/application/use-cases/create-video/create-video.use-case';
 import { UpdateVideoUseCase } from '../../core/video/application/use-cases/update-video/update-video.use-case';
@@ -24,7 +26,14 @@ import { UpdateVideoInput } from '../../core/video/application/use-cases/update-
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { UploadAudioVideoMediaInput } from '../../core/video/application/use-cases/upload-audio-video-medias/upload-audio-video-media.input';
 import { DeleteVideoUseCase } from '@core/video/application/use-cases/delete-video/delete-video.use-case';
+import { ListVideosUseCase } from '@core/video/application/use-cases/list-videos/list-videos.use-case';
+import { SearchVideoDto } from './dto/search-videos.dto';
+import { VideoOutput } from '@core/video/application/use-cases/common/video-output';
+import { VideoCollectionPresenter, VideoPresenter } from './videos.presenter';
+import { AuthGuard } from '../auth-module/auth.guard';
+import { CheckIsAdminGuard } from '../auth-module/check-is-admin.guard';
 
+@UseGuards(AuthGuard, CheckIsAdminGuard)
 @Controller('videos')
 export class VideosController {
   @Inject(CreateVideoUseCase)
@@ -42,19 +51,27 @@ export class VideosController {
   @Inject(GetVideoUseCase)
   private getUseCase: GetVideoUseCase;
 
+  @Inject(ListVideosUseCase)
+  private listUseCase: ListVideosUseCase;
+
   @Post()
   async create(@Body() createVideoDto: CreateVideoDto) {
     const { id } = await this.createUseCase.execute(createVideoDto);
-    //VideoPresenter
-    return await this.getUseCase.execute({ id });
+    return VideosController.serialize(await this.getUseCase.execute({ id }));
+  }
+
+  @Get()
+  async search(@Query() searchParams: SearchVideoDto) {
+    const output = await this.listUseCase.execute(searchParams);
+    return new VideoCollectionPresenter(output);
   }
 
   @Get(':id')
   async findOne(
     @Param('id', new ParseUUIDPipe({ errorHttpStatusCode: 422 })) id: string,
   ) {
-    //VideoPresenter
-    return await this.getUseCase.execute({ id });
+    const output = await this.getUseCase.execute({ id });
+    return VideosController.serialize(output);
   }
 
   @UseInterceptors(
@@ -133,7 +150,8 @@ export class VideosController {
       }
     }
 
-    return await this.getUseCase.execute({ id });
+    const output = await this.getUseCase.execute({ id });
+    return VideosController.serialize(output);
   }
 
   @UseInterceptors(
@@ -190,7 +208,9 @@ export class VideosController {
     } else {
       //use case upload image media
     }
-    return await this.getUseCase.execute({ id });
+
+    const output = await this.getUseCase.execute({ id });
+    return VideosController.serialize(output);
   }
 
   @HttpCode(204)
@@ -199,5 +219,9 @@ export class VideosController {
     @Param('id', new ParseUUIDPipe({ errorHttpStatusCode: 422 })) id: string,
   ) {
     return this.deleteUseCase.execute({ id });
+  }
+
+  static serialize(output: VideoOutput) {
+    return new VideoPresenter(output);
   }
 }

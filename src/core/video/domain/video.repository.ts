@@ -31,6 +31,22 @@ export class VideoSearchParams extends SearchParams<VideoFilter> {
       };
     } = {},
   ) {
+    if (
+      props.filter?.categories_id &&
+      !Array.isArray(props.filter.categories_id)
+    ) {
+      props.filter.categories_id = [props.filter.categories_id];
+    }
+    if (props.filter?.genres_id && !Array.isArray(props.filter.genres_id)) {
+      props.filter.genres_id = [props.filter.genres_id];
+    }
+    if (
+      props.filter?.cast_members_id &&
+      !Array.isArray(props.filter?.cast_members_id)
+    ) {
+      props.filter.cast_members_id = [props.filter?.cast_members_id];
+    }
+
     const categories_id = props.filter?.categories_id?.map((c) =>
       c instanceof CategoryId ? c : new CategoryId(c),
     );
