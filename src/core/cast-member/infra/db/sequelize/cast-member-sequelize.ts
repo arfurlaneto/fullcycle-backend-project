@@ -119,15 +119,15 @@ export class CastMemberSequelizeRepository implements ICastMemberRepository {
   }
 
   async update(entity: CastMember): Promise<void> {
-    const id = entity.cast_member_id.id;
+    const model = await this.castMemberModel.findByPk(entity.cast_member_id.id);
 
-    const [affectedRows] = await this.castMemberModel.update(entity.toJSON(), {
+    if (!model) {
+      throw new NotFoundError(entity.cast_member_id.id, this.getEntity());
+    }
+
+    await this.castMemberModel.update(entity.toJSON(), {
       where: { cast_member_id: entity.cast_member_id.id },
     });
-
-    if (affectedRows !== 1) {
-      throw new NotFoundError(id, this.getEntity());
-    }
   }
   async delete(cast_member_id: CastMemberId): Promise<void> {
     const id = cast_member_id.id;

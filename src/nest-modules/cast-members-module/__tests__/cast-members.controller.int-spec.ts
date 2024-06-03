@@ -19,6 +19,7 @@ import {
 import { DatabaseModule } from '../../database-module/database.module';
 import { ConfigModule } from '../../config-module/config.module';
 import { CastMemberOutputMapper } from '../../../core/cast-member/application/use-cases/common/cast-member-output';
+import { AuthModule } from '../../../nest-modules/auth-module/auth.module';
 
 describe('CastMembersController Integration Tests', () => {
   let controller: CastMembersController;
@@ -26,7 +27,7 @@ describe('CastMembersController Integration Tests', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [ConfigModule.forRoot(), DatabaseModule, CastMembersModule],
+      imports: [ConfigModule.forRoot(), DatabaseModule, CastMembersModule, AuthModule],
     }).compile();
 
     controller = module.get(CastMembersController);
